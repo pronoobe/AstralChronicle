@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 180">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0a1a0a"/><stop offset="100%" stop-color="#1a3a1a"/></linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%"><stop offset="0%" stop-color="#81c784" stop-opacity="0.3"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+  </defs>
+  <rect width="140" height="180" fill="url(#bg)"/>
+  <rect width="140" height="180" fill="url(#glow)"/>
+  <path d="M70 70 L10 30 L30 65 L5 50 L35 75Z" fill="#2e7d32" opacity="0.7"/>
+  <path d="M70 70 L130 30 L110 65 L135 50 L105 75Z" fill="#2e7d32" opacity="0.7"/>
+  <ellipse cx="70" cy="90" rx="25" ry="35" fill="#1b4a1b"/>
+  <circle cx="70" cy="55" r="18" fill="#1e5a1e"/>
+  <path d="M62 58 L70 72 L78 58Z" fill="#ffb74d"/>
+  <circle cx="60" cy="50" r="4" fill="#81c784"/>
+  <circle cx="80" cy="50" r="4" fill="#81c784"/>
+  <circle cx="60" cy="50" r="2" fill="#000"/>
+  <circle cx="80" cy="50" r="2" fill="#000"/>
+  <path d="M60 125 L50 155 L65 130Z" fill="#4caf50" opacity="0.6"/>
+  <path d="M70 128 L70 160 L75 130Z" fill="#66bb6a" opacity="0.6"/>
+  <path d="M80 125 L90 155 L75 130Z" fill="#4caf50" opacity="0.6"/>
+  <text x="70" y="170" text-anchor="middle" fill="#81c784" font-size="12" font-weight="bold" font-family="sans-serif">风魔</text>
+</svg>

@@ -1,0 +1,138 @@
+{
+  "element_baseline": {
+    "火": {
+      "hp": 1100,
+      "atk": 210,
+      "defense": 70,
+      "crit": 0.2,
+      "gauge": 1.1
+    },
+    "水": {
+      "hp": 1350,
+      "atk": 165,
+      "defense": 95,
+      "crit": 0.12,
+      "gauge": 1.0
+    },
+    "风": {
+      "hp": 1200,
+      "atk": 185,
+      "defense": 80,
+      "crit": 0.24,
+      "gauge": 1.15
+    },
+    "土": {
+      "hp": 1450,
+      "atk": 155,
+      "defense": 110,
+      "crit": 0.1,
+      "gauge": 0.95
+    },
+    "光": {
+      "hp": 1250,
+      "atk": 175,
+      "defense": 90,
+      "crit": 0.15,
+      "gauge": 1.05
+    }
+  },
+  "stage_templates": {
+    "小怪": {
+      "enemy_hp": 650,
+      "enemy_atk": 85,
+      "enemy_def": 35,
+      "enemy_crit": 0.06,
+      "difficulty": 0.75,
+      "kind": "small",
+      "turns_limit": 8
+    },
+    "精英": {
+      "enemy_hp": 1300,
+      "enemy_atk": 140,
+      "enemy_def": 60,
+      "enemy_crit": 0.1,
+      "difficulty": 0.95,
+      "kind": "elite",
+      "turns_limit": 10
+    },
+    "Boss": {
+      "enemy_hp": 1600,
+      "enemy_atk": 120,
+      "enemy_def": 45,
+      "enemy_crit": 0.12,
+      "difficulty": 0.75,
+      "kind": "boss",
+      "turns_limit": 14
+    }
+  },
+  "campaign_sequence": [
+    "小怪",
+    "小怪",
+    "精英",
+    "小怪",
+    "精英",
+    "小怪",
+    "小怪",
+    "精英",
+    "Boss"
+  ],
+  "optimization": {
+    "stage_weights": {
+      "小怪": 1.0,
+      "精英": 1.2,
+      "Boss": 1.6
+    },
+    "search_iterations": 14,
+    "trials_per_build": 3,
+    "campaign_trials": 6,
+    "seed_map": {
+      "火": 101,
+      "水": 202,
+      "风": 303,
+      "土": 404,
+      "光": 505
+    }
+  },
+  "best_campaign_builds": {
+    "火": {
+      "build": "连焰斩 + 炎盾 + 焚血回复",
+      "ult": "日轮爆炎",
+      "clear_rate": 1.0,
+      "avg_final_hp": 1044.4242571303214,
+      "avg_total_turns": 31.833333333333332,
+      "score": 1092.9969719028816
+    },
+    "水": {
+      "build": "回流针 + 漩涡连击 + 生命潮涌",
+      "ult": "终末海啸",
+      "clear_rate": 1.0,
+      "avg_final_hp": 1345.1860465116279,
+      "avg_total_turns": 44.0,
+      "score": 1113.7779069767441
+    },
+    "风": {
+      "build": "旋羽连射 + 风刃刻痕 + 回旋恢复",
+      "ult": "天穹飓风",
+      "clear_rate": 0.0,
+      "avg_final_hp": 0.0,
+      "avg_total_turns": 22.5,
+      "score": -45.0
+    },
+    "土": {
+      "build": "磐石壁垒 + 裂地震 + 石肤愈合",
+      "ult": "大地终裁",
+      "clear_rate": 1.0,
+      "avg_final_hp": 1432.4347826086957,
+      "avg_total_turns": 51.0,
+      "score": 1112.8652173913044
+    },
+    "光": {
+      "build": "圣愈 + 圣盾 + 星芒乱射",
+      "ult": "裁决之日",
+      "clear_rate": 1.0,
+      "avg_final_hp": 1222.5285714285717,
+      "avg_total_turns": 40.833333333333336,
+      "score": 1101.712619047619
+    }
+  }
+}

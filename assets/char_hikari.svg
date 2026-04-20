@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a2a00"/>
+      <stop offset="40%" stop-color="#5a4000"/>
+      <stop offset="100%" stop-color="#1a1200"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#ffaa00" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#3a2a00" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="haloGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.6"/>
+      <stop offset="70%" stop-color="#ffaa00" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="silhouette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1200"/>
+      <stop offset="100%" stop-color="#0d0900"/>
+    </linearGradient>
+    <linearGradient id="staffGlowGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#ffaa00"/>
+      <stop offset="100%" stop-color="#cc8800"/>
+    </linearGradient>
+    <filter id="lightGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="starGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+    <filter id="outerGlow">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="280" fill="url(#bg)"/>
+  <rect width="200" height="280" fill="url(#glow)"/>
+
+  <!-- Radiant light rays from behind -->
+  <g opacity="0.1">
+    <line x1="100" y1="60" x2="20" y2="0" stroke="#ffd700" stroke-width="8"/>
+    <line x1="100" y1="60" x2="60" y2="0" stroke="#ffd700" stroke-width="6"/>
+    <line x1="100" y1="60" x2="140" y2="0" stroke="#ffd700" stroke-width="6"/>
+    <line x1="100" y1="60" x2="180" y2="0" stroke="#ffd700" stroke-width="8"/>
+    <line x1="100" y1="60" x2="0" y2="60" stroke="#ffd700" stroke-width="5"/>
+    <line x1="100" y1="60" x2="200" y2="60" stroke="#ffd700" stroke-width="5"/>
+    <line x1="100" y1="60" x2="0" y2="140" stroke="#ffd700" stroke-width="4"/>
+    <line x1="100" y1="60" x2="200" y2="140" stroke="#ffd700" stroke-width="4"/>
+  </g>
+
+  <!-- Decorative border -->
+  <rect x="4" y="4" width="192" height="272" rx="8" fill="none" stroke="#ffd700" stroke-width="1.5" stroke-opacity="0.4"/>
+  <rect x="8" y="8" width="184" height="264" rx="6" fill="none" stroke="#ffcc00" stroke-width="0.5" stroke-opacity="0.25"/>
+
+  <!-- Halo behind head -->
+  <ellipse cx="100" cy="52" rx="30" ry="30" fill="url(#haloGlow)" filter="url(#softGlow)"/>
+  <circle cx="100" cy="52" r="28" fill="none" stroke="#ffd700" stroke-width="1.2" opacity="0.5"/>
+
+  <!-- Body glow aura -->
+  <ellipse cx="100" cy="140" rx="50" ry="70" fill="#ffd700" opacity="0.04" filter="url(#outerGlow)"/>
+
+  <!-- Character silhouette - elegant priestess with very long hair and staff -->
+  <g fill="url(#silhouette)">
+    <!-- Head -->
+    <ellipse cx="100" cy="70" rx="20" ry="24"/>
+    <!-- Hair - very long, flowing past waist -->
+    <ellipse cx="100" cy="60" rx="24" ry="17"/>
+    <!-- Hair crown/tiara area -->
+    <path d="M80,55 Q85,48 90,46 Q95,44 100,43 Q105,44 110,46 Q115,48 120,55 Q115,52 110,50 Q105,48 100,47 Q95,48 90,50 Q85,52 80,55Z"/>
+    <!-- Long hair left -->
+    <path d="M78,56 Q68,72 62,95 Q56,120 52,150 Q48,180 46,210 Q44,225 48,230 Q52,225 54,210 Q58,180 62,150 Q66,120 72,95 Q76,78 80,64Z"/>
+    <!-- Long hair right -->
+    <path d="M122,56 Q132,72 138,95 Q144,120 148,150 Q152,180 154,210 Q156,225 152,230 Q148,225 146,210 Q142,180 138,150 Q134,120 128,95 Q124,78 120,64Z"/>
+    <!-- Hair strands in front -->
+    <path d="M82,60 Q78,70 76,82 Q75,88 78,86 Q80,78 82,68Z"/>
+    <path d="M118,60 Q122,70 124,82 Q125,88 122,86 Q120,78 118,68Z"/>
+    <!-- Neck -->
+    <rect x="93" y="91" width="14" height="12" rx="3"/>
+    <!-- Elegant flowing robes -->
+    <path d="M82,102 Q78,108 75,120 Q72,135 70,150 Q68,165 66,180 L134,180 Q132,165 130,150 Q128,135 125,120 Q122,108 118,102Z"/>
+    <!-- Wide ceremonial sleeves left -->
+    <path d="M82,108 Q70,115 60,125 Q48,140 38,160 Q32,175 28,188 Q25,195 32,192 Q38,180 48,165 Q58,148 68,135 Q76,125 82,115Z"/>
+    <!-- Wide ceremonial sleeves right -->
+    <path d="M118,108 Q130,115 140,125 Q152,140 162,160 Q168,175 172,188 Q175,195 168,192 Q162,180 152,165 Q142,148 132,135 Q124,125 118,115Z"/>
+    <!-- Long flowing dress -->
+    <path d="M60,178 Q55,200 50,220 Q48,232 45,240 Q42,248 48,248 L152,248 Q158,248 155,240 Q152,232 150,220 Q145,200 140,178Z"/>
+    <!-- Dress layers -->
+    <path d="M55,210 Q65,205 80,210 Q95,215 100,212 Q105,215 120,210 Q135,205 145,210" fill="none" stroke="#0d0900" stroke-width="1" opacity="0.4"/>
+    <path d="M50,230 Q65,225 80,230 Q95,235 100,232 Q105,235 120,230 Q135,225 150,230" fill="none" stroke="#0d0900" stroke-width="1" opacity="0.3"/>
+  </g>
+
+  <!-- Glowing staff -->
+  <g filter="url(#lightGlow)">
+    <line x1="155" y1="55" x2="148" y2="220" stroke="url(#staffGlowGrad)" stroke-width="3" stroke-linecap="round"/>
+    <!-- Staff head - radiant star shape -->
+    <polygon points="155,38 157,48 167,50 159,55 161,65 155,58 149,65 151,55 143,50 153,48" fill="#ffd700" opacity="0.8"/>
+    <!-- Staff orb -->
+    <circle cx="155" cy="50" r="6" fill="#ffd700" opacity="0.5"/>
+    <circle cx="155" cy="50" r="3.5" fill="#ffffaa" opacity="0.7"/>
+    <circle cx="153" cy="48" r="1.5" fill="#ffffff" opacity="0.8"/>
+  </g>
+
+  <!-- Eyes glow -->
+  <ellipse cx="92" cy="70" rx="3" ry="2" fill="#ffd700" opacity="0.9" filter="url(#lightGlow)"/>
+  <ellipse cx="108" cy="70" rx="3" ry="2" fill="#ffd700" opacity="0.9" filter="url(#lightGlow)"/>
+
+  <!-- Star/sparkle accents -->
+  <g filter="url(#starGlow)">
+    <!-- Stars scattered around -->
+    <g opacity="0.7">
+      <polygon points="30,50 31,54 35,55 31,56 30,60 29,56 25,55 29,54" fill="#ffd700"/>
+      <polygon points="170,70 171,73 174,74 171,75 170,78 169,75 166,74 169,73" fill="#ffcc00" opacity="0.8"/>
+      <polygon points="25,130 26,133 29,134 26,135 25,138 24,135 21,134 24,133" fill="#ffd700" opacity="0.6"/>
+      <polygon points="180,150 181,153 184,154 181,155 180,158 179,155 176,154 179,153" fill="#ffcc00" opacity="0.5"/>
+      <polygon points="40,180 41,183 44,184 41,185 40,188 39,185 36,184 39,183" fill="#ffd700" opacity="0.5"/>
+      <polygon points="165,200 166,203 169,204 166,205 165,208 164,205 161,204 164,203" fill="#ffcc00" opacity="0.4"/>
+    </g>
+    <!-- Larger decorative star -->
+    <polygon points="35,25 37,32 44,33 39,37 40,44 35,40 30,44 31,37 26,33 33,32" fill="#ffd700" opacity="0.4"/>
+  </g>
+
+  <!-- Sparkle particles -->
+  <g opacity="0.5">
+    <circle cx="50" cy="60" r="1.5" fill="#ffd700">
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="145" cy="30" r="1" fill="#ffffaa">
+      <animate attributeName="opacity" values="0.4;0.1;0.4" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="170" cy="110" r="1.2" fill="#ffd700">
+      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="30" cy="100" r="1" fill="#ffcc00">
+      <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="75" cy="30" r="0.8" fill="#ffffaa">
+      <animate attributeName="opacity" values="0.5;0.15;0.5" dur="1.8s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Bottom panel -->
+  <rect x="0" y="248" width="200" height="32" fill="#1a1200" fill-opacity="0.85"/>
+  <line x1="20" y1="250" x2="180" y2="250" stroke="#ffd700" stroke-width="1" stroke-opacity="0.4"/>
+
+  <!-- Character name -->
+  <text x="100" y="272" text-anchor="middle" font-family="serif" font-size="22" font-weight="bold" fill="#ffd700" letter-spacing="8">辉夜</text>
+  <text x="100" y="272" text-anchor="middle" font-family="serif" font-size="22" font-weight="bold" fill="#ffffaa" letter-spacing="8" opacity="0.25">辉夜</text>
+
+  <!-- Corner accents with small stars -->
+  <path d="M4,20 L4,4 L20,4" fill="none" stroke="#ffd700" stroke-width="2" stroke-opacity="0.5"/>
+  <path d="M180,4 L196,4 L196,20" fill="none" stroke="#ffd700" stroke-width="2" stroke-opacity="0.5"/>
+  <path d="M4,260 L4,276 L20,276" fill="none" stroke="#ffd700" stroke-width="2" stroke-opacity="0.5"/>
+  <path d="M180,276 L196,276 L196,260" fill="none" stroke="#ffd700" stroke-width="2" stroke-opacity="0.5"/>
+</svg>

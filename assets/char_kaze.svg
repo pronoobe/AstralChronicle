@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#002200"/>
+      <stop offset="50%" stop-color="#0a4a2a"/>
+      <stop offset="100%" stop-color="#001a0a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#002200" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="silhouette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#001a0a"/>
+      <stop offset="100%" stop-color="#000d05"/>
+    </linearGradient>
+    <linearGradient id="windGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00cc66" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#00ff88"/>
+      <stop offset="100%" stop-color="#88ffcc" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="daggerGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#88ffcc"/>
+      <stop offset="50%" stop-color="#00cc66"/>
+      <stop offset="100%" stop-color="#008844"/>
+    </linearGradient>
+    <filter id="windGlow">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="280" fill="url(#bg)"/>
+  <rect width="200" height="280" fill="url(#glow)"/>
+
+  <!-- Decorative border -->
+  <rect x="4" y="4" width="192" height="272" rx="8" fill="none" stroke="#00cc66" stroke-width="1.5" stroke-opacity="0.35"/>
+  <rect x="8" y="8" width="184" height="264" rx="6" fill="none" stroke="#00ff88" stroke-width="0.5" stroke-opacity="0.2"/>
+
+  <!-- Wind swirl background patterns -->
+  <g opacity="0.12" fill="none" stroke="#00ff88" stroke-width="1">
+    <path d="M20,80 Q60,60 100,75 Q140,90 180,70"/>
+    <path d="M10,130 Q50,115 90,125 Q130,135 170,118 Q190,110 200,115"/>
+    <path d="M0,180 Q40,168 80,178 Q120,188 160,172 Q200,160 210,168"/>
+  </g>
+
+  <!-- Character silhouette - nimble assassin with short hair and twin daggers -->
+  <g fill="url(#silhouette)">
+    <!-- Head -->
+    <ellipse cx="100" cy="72" rx="20" ry="24"/>
+    <!-- Short spiky hair -->
+    <path d="M80,60 Q78,50 82,42 Q85,38 90,36 Q95,34 100,33 Q105,34 110,36 Q115,38 118,42 Q122,50 120,60Z"/>
+    <!-- Hair spikes -->
+    <path d="M82,50 Q78,42 75,35 Q80,40 83,47Z"/>
+    <path d="M90,42 Q88,32 85,25 Q90,32 92,40Z"/>
+    <path d="M100,38 Q100,28 102,22 Q104,28 102,38Z"/>
+    <path d="M110,42 Q112,32 115,25 Q112,34 110,42Z"/>
+    <path d="M118,50 Q122,42 125,35 Q120,42 117,50Z"/>
+    <!-- Neck -->
+    <rect x="94" y="93" width="12" height="10" rx="2"/>
+    <!-- Slim torso - assassin outfit -->
+    <path d="M84,102 Q80,108 78,118 Q76,130 75,142 Q74,155 76,165 L124,165 Q126,155 125,142 Q124,130 122,118 Q120,108 116,102Z"/>
+    <!-- Scarf/cape flowing back -->
+    <path d="M85,102 Q75,100 65,105 Q50,112 38,125 Q30,135 25,148 Q22,155 28,152 Q35,142 45,130 Q55,118 68,110 Q78,105 85,104Z" fill="#001a0a" opacity="0.8"/>
+    <!-- Left arm extended with dagger -->
+    <path d="M84,108 Q72,112 62,118 Q52,126 44,136 Q40,142 44,142 Q50,136 58,128 Q66,120 75,114 Q80,110 84,108Z"/>
+    <!-- Right arm extended with dagger -->
+    <path d="M116,108 Q128,112 138,118 Q148,126 156,136 Q160,142 156,142 Q150,136 142,128 Q134,120 125,114 Q120,110 116,108Z"/>
+    <!-- Slim pants -->
+    <path d="M76,162 Q74,180 72,198 Q70,212 68,225 L92,225 Q90,210 88,195 Q86,180 86,168Z"/>
+    <path d="M124,162 Q126,180 128,198 Q130,212 132,225 L108,225 Q110,210 112,195 Q114,180 114,168Z"/>
+    <!-- Boots -->
+    <path d="M65,222 Q62,230 60,238 Q58,242 64,244 Q72,245 82,244 Q88,242 90,238 L92,222Z"/>
+    <path d="M108,222 Q110,238 112,242 Q118,245 128,244 Q136,242 140,238 Q138,230 135,222Z"/>
+  </g>
+
+  <!-- Twin daggers -->
+  <g filter="url(#windGlow)">
+    <!-- Left dagger -->
+    <line x1="42" y1="140" x2="25" y2="108" stroke="url(#daggerGrad)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="36" y1="132" x2="48" y2="136" stroke="#88ffcc" stroke-width="2" stroke-linecap="round"/>
+    <!-- Right dagger -->
+    <line x1="158" y1="140" x2="175" y2="108" stroke="url(#daggerGrad)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="164" y1="132" x2="152" y2="136" stroke="#88ffcc" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Eyes glow -->
+  <ellipse cx="92" cy="72" rx="3" ry="1.8" fill="#00ff88" opacity="0.9" filter="url(#windGlow)"/>
+  <ellipse cx="108" cy="72" rx="3" ry="1.8" fill="#00ff88" opacity="0.9" filter="url(#windGlow)"/>
+
+  <!-- Wind swirl accents -->
+  <g filter="url(#windGlow)" opacity="0.6">
+    <!-- Swirl around character -->
+    <path d="M25,200 Q30,185 50,180 Q70,175 85,165 Q95,158 80,160 Q60,164 40,175 Q25,185 20,200" fill="none" stroke="#00ff88" stroke-width="1.5"/>
+    <path d="M175,190 Q170,175 150,172 Q130,170 115,162 Q105,155 120,158 Q140,162 160,170 Q175,178 180,195" fill="none" stroke="#00cc66" stroke-width="1.2"/>
+    <!-- Small wind curves -->
+    <path d="M15,100 Q30,95 45,100 Q55,105 45,105 Q35,102 25,105" fill="none" stroke="#00ff88" stroke-width="1" opacity="0.5"/>
+    <path d="M155,85 Q170,80 185,85 Q190,90 180,88 Q170,84 165,88" fill="none" stroke="#00cc66" stroke-width="0.8" opacity="0.4"/>
+  </g>
+
+  <!-- Leaf particles -->
+  <g opacity="0.5">
+    <path d="M35,60 Q38,56 42,58 Q38,62 35,60Z" fill="#00cc66">
+      <animateTransform attributeName="transform" type="translate" values="0,0;20,30;40,60" dur="5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.3;0" dur="5s" repeatCount="indefinite"/>
+    </path>
+    <path d="M160,40 Q163,36 167,38 Q163,42 160,40Z" fill="#00ff88">
+      <animateTransform attributeName="transform" type="translate" values="0,0;-15,25;-30,55" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0.25;0" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <path d="M90,30 Q93,26 97,28 Q93,32 90,30Z" fill="#88ffcc">
+      <animateTransform attributeName="transform" type="translate" values="0,0;10,20;25,45" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0.2;0" dur="6s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- Speed lines -->
+  <g opacity="0.15" stroke="#00ff88" stroke-width="0.5">
+    <line x1="0" y1="90" x2="30" y2="88"/>
+    <line x1="0" y1="140" x2="25" y2="138"/>
+    <line x1="170" y1="95" x2="200" y2="93"/>
+    <line x1="175" y1="150" x2="200" y2="148"/>
+  </g>
+
+  <!-- Bottom panel -->
+  <rect x="0" y="245" width="200" height="35" fill="#001a0a" fill-opacity="0.85"/>
+  <line x1="20" y1="248" x2="180" y2="248" stroke="#00cc66" stroke-width="1" stroke-opacity="0.4"/>
+
+  <!-- Character name -->
+  <text x="100" y="270" text-anchor="middle" font-family="serif" font-size="22" font-weight="bold" fill="#00cc66" letter-spacing="8">风羽</text>
+  <text x="100" y="270" text-anchor="middle" font-family="serif" font-size="22" font-weight="bold" fill="#88ffcc" letter-spacing="8" opacity="0.25">风羽</text>
+
+  <!-- Corner accents -->
+  <path d="M4,20 L4,4 L20,4" fill="none" stroke="#00cc66" stroke-width="2" stroke-opacity="0.5"/>
+  <path d="M180,4 L196,4 L196,20" fill="none" stroke="#00cc66" stroke-width="2" stroke-opacity="0.5"/>
+  <path d="M4,260 L4,276 L20,276" fill="none" stroke="#00cc66" stroke-width="2" stroke-opacity="0.5"/>
+  <path d="M180,276 L196,276 L196,260" fill="none" stroke="#00cc66" stroke-width="2" stroke-opacity="0.5"/>
+</svg>

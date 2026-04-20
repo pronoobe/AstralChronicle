@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 180">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#001020"/><stop offset="100%" stop-color="#003050"/></linearGradient>
+    <radialGradient id="glow" cx="50%" cy="60%"><stop offset="0%" stop-color="#4fc3f7" stop-opacity="0.3"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+  </defs>
+  <rect width="140" height="180" fill="url(#bg)"/>
+  <rect width="140" height="180" fill="url(#glow)"/>
+  <path d="M70 150 Q30 120 40 80 Q50 50 70 40 Q90 50 100 80 Q110 120 70 150Z" fill="#0a3050" opacity="0.8"/>
+  <ellipse cx="70" cy="50" rx="30" ry="22" fill="#0d4060"/>
+  <ellipse cx="58" cy="46" rx="6" ry="4" fill="#4fc3f7"/>
+  <ellipse cx="82" cy="46" rx="6" ry="4" fill="#4fc3f7"/>
+  <circle cx="58" cy="46" r="2.5" fill="#ffffff"/>
+  <circle cx="82" cy="46" r="2.5" fill="#ffffff"/>
+  <path d="M40 45 L20 25 L45 40Z" fill="#2196f3" opacity="0.7"/>
+  <path d="M100 45 L120 25 L95 40Z" fill="#2196f3" opacity="0.7"/>
+  <path d="M10 140 Q30 130 50 140 Q70 150 90 140 Q110 130 130 140" fill="none" stroke="#4fc3f7" stroke-width="2" opacity="0.4"/>
+  <path d="M10 150 Q30 140 50 150 Q70 160 90 150 Q110 140 130 150" fill="none" stroke="#2196f3" stroke-width="1.5" opacity="0.3"/>
+  <text x="70" y="170" text-anchor="middle" fill="#4fc3f7" font-size="12" font-weight="bold" font-family="sans-serif">海妖</text>
+</svg>

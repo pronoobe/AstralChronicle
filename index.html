@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>星辉幻战录 - Astral Chronicle</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans SC',sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#0a0a14;color:#e8e0d0;overflow-x:hidden;min-height:100vh;min-height:100dvh}
+
+/* ===== ANIMATIONS ===== */
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
+@keyframes shakeHard{0%,100%{transform:translate(0,0)}10%{transform:translate(-12px,4px)}20%{transform:translate(10px,-6px)}30%{transform:translate(-14px,2px)}40%{transform:translate(8px,6px)}50%{transform:translate(-10px,-4px)}60%{transform:translate(12px,2px)}70%{transform:translate(-6px,6px)}80%{transform:translate(8px,-2px)}90%{transform:translate(-4px,4px)}}
+@keyframes floatDmg{0%{opacity:1;transform:translateY(0) scale(1)}60%{opacity:1;transform:translateY(-60px) scale(1.3)}100%{opacity:0;transform:translateY(-90px) scale(.8)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 5px var(--gc,#c9a84c)}50%{box-shadow:0 0 20px var(--gc,#c9a84c),0 0 40px var(--gc,#c9a84c)}}
+@keyframes ultFlash{0%{opacity:0}15%{opacity:.9}100%{opacity:0}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bossEnter{from{opacity:0;transform:scale(1.3) translateY(-20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes specialChargeUp{0%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.08);filter:brightness(1.6) saturate(2)}100%{transform:scale(1);filter:brightness(1.2) saturate(1.3)}}
+@keyframes dangerPulse{0%,100%{border-color:#ff4444;box-shadow:0 0 10px rgba(255,68,68,.3)}50%{border-color:#ff0000;box-shadow:0 0 25px rgba(255,0,0,.6)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
+@keyframes stageTitle{0%{opacity:0;transform:scale(.5) translateY(20px)}30%{opacity:1;transform:scale(1.1) translateY(-5px)}50%{transform:scale(1)}100%{opacity:0;transform:translateY(-30px)}}
+
+.shake{animation:shake .3s ease-in-out}
+.shake-hard{animation:shakeHard .6s ease-in-out}
+.dmg-float{position:absolute;animation:floatDmg 1.2s ease-out forwards;font-weight:900;font-size:2rem;text-shadow:2px 2px 4px rgba(0,0,0,.8);pointer-events:none;z-index:999}
+.ult-flash{position:fixed;inset:0;animation:ultFlash .7s ease-out forwards;pointer-events:none;z-index:9999}
+.special-charge{animation:specialChargeUp .8s ease-in-out}
+.stage-title-anim{animation:stageTitle 2s ease-out forwards;position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9998;pointer-events:none}
+
+.skill-btn{transition:all .15s;position:relative;overflow:hidden}
+.skill-btn:active:not(.disabled){transform:scale(.92)}
+.skill-btn.disabled{opacity:.4;pointer-events:none}
+.cd-overlay{position:absolute;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:bold;border-radius:inherit}
+.hp-bar,.gauge-bar{transition:width .5s ease}
+.log-entry{animation:fadeSlideUp .3s ease}
+
+.tooltip-box{position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:#1a1a2e;border:1px solid #c9a84c;border-radius:8px;padding:10px;min-width:220px;z-index:100;pointer-events:none;font-size:.75rem;white-space:normal}
+
+.char-card{border:2px solid #333;border-radius:12px;padding:10px;cursor:pointer;transition:all .2s;background:#1a1a2e}
+.char-card:hover{border-color:#c9a84c;transform:translateY(-2px)}
+.char-card.selected{border-color:#c9a84c;background:#2a2a3e;box-shadow:0 0 15px rgba(201,168,76,.3)}
+
+/* 【替换图片】boss-portrait 和 char-portrait 控制立绘尺寸 */
+.boss-portrait{width:100px;height:130px;border-radius:8px;overflow:hidden;border:2px solid #444;animation:bossEnter .5s ease;flex-shrink:0}
+.boss-portrait img{width:100%;height:100%;object-fit:cover}
+.char-portrait-full{width:160px;height:220px;border-radius:12px;overflow:hidden;border:2px solid #c9a84c;margin:0 auto}
+.char-portrait-full img{width:100%;height:100%;object-fit:cover}
+.char-avatar{width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid;flex-shrink:0}
+.char-avatar img{width:100%;height:100%;object-fit:cover}
+.char-card-portrait{width:52px;height:68px;border-radius:8px;overflow:hidden;border:2px solid;flex-shrink:0}
+.char-card-portrait img{width:100%;height:100%;object-fit:cover}
+
+#game-container{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative}
+
+/* Stage bar */
+.stage-bar{display:flex;gap:2px;justify-content:center}
+.stage-dot{width:24px;height:6px;border-radius:3px;background:#333}
+.stage-dot.done{background:#4caf50}
+.stage-dot.current{background:#c9a84c;animation:pulseGlow 1.5s infinite}
+.stage-dot.future{background:#222}
+
+/* Special attack warning */
+.special-warn{animation:dangerPulse 1s infinite;border:2px solid #ff4444;border-radius:8px;padding:8px;margin:4px 0;background:rgba(255,0,0,.1)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ============================================================
+// GAME_CONFIG - 数据驱动核心
+// 【修改此处】更换数值/资源路径/文案
+// ============================================================
+const GAME_CONFIG = {
+  ELEMENT_CHART: {'火':'风','风':'土','土':'水','水':'火','光':null},
+  ELEMENT_COLORS: {'火':'#ff6b35','水':'#4fc3f7','风':'#81c784','土':'#ffb74d','光':'#fff176'},
+  ELEMENT_BG: {'火':'linear-gradient(135deg,#2a0a00,#4a1500)','水':'linear-gradient(135deg,#001a2a,#003355)','风':'linear-gradient(135deg,#0a1a0a,#1a3a1a)','土':'linear-gradient(135deg,#1a1200,#3a2800)','光':'linear-gradient(135deg,#1a1a00,#3a3a10)'},
+  ELEMENT_ICONS: {'火':'🔥','水':'💧','风':'🍃','土':'🏔','光':'✨'},
+  ADVANTAGE_MULT: 1.5, DISADVANTAGE_MULT: 0.5, CRIT_MULT: 1.8,
+  MAX_GAUGE: 100, GAUGE_ULT_THRESHOLD: 100,
+  BOSS_SCALE_PER_ROUND: 0.05,
+
+  // ===== 关卡序列 (9关) =====
+  STAGES: [
+    {type:'小怪',label:'遭遇战',hpMul:0.4,atkMul:0.6,defMul:0.5,lvl:1},
+    {type:'小怪',label:'伏击战',hpMul:0.5,atkMul:0.7,defMul:0.6,lvl:3},
+    {type:'精英',label:'精英守卫',hpMul:0.8,atkMul:0.85,defMul:0.75,lvl:5,hasSpecial:false},
+    {type:'小怪',label:'突围战',hpMul:0.55,atkMul:0.75,defMul:0.65,lvl:6},
+    {type:'精英',label:'精英猎手',hpMul:1.0,atkMul:1.0,defMul:0.9,lvl:8,hasSpecial:true},
+    {type:'小怪',label:'前哨战',hpMul:0.6,atkMul:0.8,defMul:0.7,lvl:9},
+    {type:'小怪',label:'决战前夕',hpMul:0.65,atkMul:0.85,defMul:0.75,lvl:10},
+    {type:'精英',label:'魔将降临',hpMul:1.2,atkMul:1.1,defMul:1.0,lvl:12,hasSpecial:true},
+    {type:'Boss',label:'终焉之战',hpMul:1.6,atkMul:1.2,defMul:1.1,lvl:15,hasSpecial:true}
+  ],
+
+  // ===== 5位角色 =====
+  // 【替换图片】修改 portrait / avatar 为真实PNG路径
+  CHARACTERS: [
+    { id:'hina', name:'绯奈', element:'火',
+      portrait:'assets/char_hina.svg', avatar:'assets/char_hina.svg',
+      lore:'炎之国的剑姬，以焚尽一切的剑术闻名。性格直率热情，战斗中如烈焰般不可阻挡。',
+      hp:2100, atk:210, def:70, crit:0.20, gaugeRate:1.1,
+      skills:[
+        {name:'焚刃',kind:'damage',power:1.55,cd:1,gauge:18,desc:'单体爆发斩击'},
+        {name:'连焰斩',kind:'multi_hit',power:0.74,hits:3,cd:2,gauge:30,desc:'三连火焰斩击'},
+        {name:'灼痕',kind:'debuff',power:0.21,duration:3,cd:2,gauge:15,desc:'削弱敌方防御20%',effect:{stat:'def',val:-0.2}},
+        {name:'过热',kind:'buff',power:0.24,duration:3,cd:3,gauge:9,desc:'攻击力提升25%',effect:{stat:'atk',val:0.25}},
+        {name:'炎盾',kind:'shield',power:0.28,duration:2,cd:6,gauge:11,desc:'获得护盾吸收伤害'},
+        {name:'烈焰心核',kind:'buff',power:0.15,duration:3,cd:6,gauge:13,desc:'暴击率提升15%',effect:{stat:'crit',val:0.15}},
+        {name:'焚血回复',kind:'heal',power:0.25,cd:4,gauge:14,desc:'回复自身生命'},
+        {name:'日轮爆炎',kind:'ult',power:4.1,cd:0,gauge:0,desc:'奥义·烈日终焉，超高倍率单体爆发'}
+      ]},
+    { id:'mizu', name:'水月', element:'水',
+      portrait:'assets/char_mizu.svg', avatar:'assets/char_mizu.svg',
+      lore:'深海神殿的巫女，掌控潮汐之力。温柔而坚定的治愈者，守护着同伴的生命。',
+      hp:2200, atk:165, def:95, crit:0.12, gaugeRate:1.0,
+      skills:[
+        {name:'潮汐箭',kind:'damage',power:1.68,cd:0,gauge:18,desc:'水流凝聚的穿透箭'},
+        {name:'回流针',kind:'heal',power:0.30,cd:3,gauge:13,desc:'治愈之水恢复生命'},
+        {name:'澄海护壁',kind:'shield',power:0.36,duration:3,cd:3,gauge:11,desc:'水幕护盾持续减伤'},
+        {name:'静水流转',kind:'buff',power:0.24,duration:2,cd:2,gauge:10,desc:'防御力提升25%',effect:{stat:'def',val:0.25}},
+        {name:'净波',kind:'debuff',power:0.21,duration:3,cd:3,gauge:12,desc:'削弱敌方攻击20%',effect:{stat:'atk',val:-0.2}},
+        {name:'漩涡连击',kind:'multi_hit',power:0.68,hits:3,cd:2,gauge:22,desc:'水旋三连击'},
+        {name:'生命潮涌',kind:'heal',power:0.45,cd:6,gauge:14,desc:'大幅回复生命值'},
+        {name:'终末海啸',kind:'ult',power:4.09,cd:0,gauge:0,desc:'奥义·终末海啸，吞噬一切的巨浪'}
+      ]},
+    { id:'kaze', name:'风羽', element:'风',
+      portrait:'assets/char_kaze.svg', avatar:'assets/char_kaze.svg',
+      lore:'自由翱翔的风之刺客，速度极快但防御薄弱。追求极限的冒险者，一击必杀是她的信条。',
+      hp:1800, atk:210, def:80, crit:0.24, gaugeRate:1.15,
+      skills:[
+        {name:'疾风刺',kind:'damage',power:3.29,cd:1,gauge:24,desc:'极速突刺，高倍率单体'},
+        {name:'旋羽连射',kind:'multi_hit',power:1.3,hits:3,cd:2,gauge:31,desc:'羽刃三连射'},
+        {name:'风舞',kind:'buff',power:0.30,duration:3,cd:3,gauge:13,desc:'暴击率提升20%',effect:{stat:'crit',val:0.20}},
+        {name:'逐风',kind:'buff',power:0.30,duration:3,cd:3,gauge:14,desc:'攻击力提升30%',effect:{stat:'atk',val:0.30}},
+        {name:'逆风步',kind:'buff',power:0.19,duration:3,cd:4,gauge:11,desc:'防御力提升20%',effect:{stat:'def',val:0.20}},
+        {name:'风刃刻痕',kind:'debuff',power:0.45,duration:3,cd:4,gauge:15,desc:'削弱敌方防御30%',effect:{stat:'def',val:-0.3}},
+        {name:'回旋恢复',kind:'heal',power:0.24,cd:4,gauge:10,desc:'风之治愈，小额回复'},
+        {name:'天穹飓风',kind:'ult',power:1.8,hits:5,cd:0,gauge:0,desc:'奥义·天穹飓风，五连高速斩击'}
+      ]},
+    { id:'tsuchi', name:'岩华', element:'土',
+      portrait:'assets/char_tsuchi.svg', avatar:'assets/char_tsuchi.svg',
+      lore:'大地守护者，拥有不可撼动的意志。沉默寡言但内心温暖，是队伍最坚实的壁垒。',
+      hp:3800, atk:155, def:110, crit:0.10, gaugeRate:0.95,
+      skills:[
+        {name:'岩击',kind:'damage',power:1.47,cd:0,gauge:13,desc:'坚硬岩拳直击'},
+        {name:'磐石壁垒',kind:'shield',power:0.45,duration:2,cd:5,gauge:12,desc:'坚不可摧的岩盾'},
+        {name:'地脉稳固',kind:'buff',power:0.33,duration:3,cd:2,gauge:11,desc:'防御力提升30%',effect:{stat:'def',val:0.30}},
+        {name:'反震',kind:'damage',power:1.16,cd:3,gauge:25,desc:'以大地之力反击'},
+        {name:'缠根',kind:'debuff',power:0.28,duration:3,cd:3,gauge:8,desc:'削弱敌方攻击25%',effect:{stat:'atk',val:-0.25}},
+        {name:'裂地震',kind:'multi_hit',power:0.70,hits:3,cd:3,gauge:25,desc:'大地震裂三连击'},
+        {name:'石肤愈合',kind:'heal',power:0.27,cd:4,gauge:11,desc:'大地恢复，稳定续航'},
+        {name:'大地终裁',kind:'ult',power:3.64,cd:0,gauge:0,desc:'奥义·大地终裁，毁灭性重击'}
+      ]},
+    { id:'hikari', name:'辉夜', element:'光',
+      portrait:'assets/char_hikari.svg', avatar:'assets/char_hikari.svg',
+      lore:'星辰教团的圣女，光芒万丈的支援者。温和优雅，以神圣之光守护一切珍视之物。',
+      hp:1900, atk:175, def:90, crit:0.15, gaugeRate:1.05,
+      skills:[
+        {name:'辉光斩',kind:'damage',power:1.5,cd:1,gauge:16,desc:'光之剑斩击'},
+        {name:'圣愈',kind:'heal',power:0.30,cd:3,gauge:12,desc:'神圣治愈之光'},
+        {name:'圣盾',kind:'shield',power:0.34,duration:3,cd:5,gauge:9,desc:'光之护盾保护全队'},
+        {name:'启明',kind:'buff',power:0.20,duration:3,cd:3,gauge:8,desc:'攻击力提升20%',effect:{stat:'atk',val:0.20}},
+        {name:'明辨',kind:'buff',power:0.18,duration:3,cd:4,gauge:8,desc:'暴击率提升15%',effect:{stat:'crit',val:0.15}},
+        {name:'净化之光',kind:'debuff',power:0.18,duration:3,cd:3,gauge:10,desc:'削弱敌方防御20%',effect:{stat:'def',val:-0.2}},
+        {name:'星芒乱射',kind:'multi_hit',power:0.66,hits:3,cd:2,gauge:22,desc:'星光三连射'},
+        {name:'裁决之日',kind:'ult',power:4.19,cd:0,gauge:0,desc:'奥义·裁决之日，终极光芒审判'}
+      ]}
+  ],
+
+  // ===== BOSS模板 - 随机生成用 =====
+  BOSS_TEMPLATES: {
+    '火':{baseHp:1200,baseAtk:120,baseDef:45,baseCrit:0.12,portrait:'assets/boss_fire.svg'},
+    '水':{baseHp:1600,baseAtk:110,baseDef:55,baseCrit:0.10,portrait:'assets/boss_water.svg'},
+    '风':{baseHp:1100,baseAtk:135,baseDef:40,baseCrit:0.18,portrait:'assets/boss_wind.svg'},
+    '土':{baseHp:1800,baseAtk:100,baseDef:70,baseCrit:0.08,portrait:'assets/boss_earth.svg'},
+    '光':{baseHp:1100,baseAtk:130,baseDef:50,baseCrit:0.15,portrait:'assets/boss_light.svg'}
+  },
+
+  // ===== BOSS随机名称片段 =====
+  BOSS_NAMES: {
+    prefix:{ '火':['炎魔','灼焰','焚天','赤狱','炎龙','魔炎','劫火'],
+             '水':['海妖','深渊','冰霜','潮汐','渊龙','冥水','寒渊'],
+             '风':['风魔','暴风','岚翼','飓风','苍穹','裂空','旋翼'],
+             '土':['地龙','岩兽','磐石','山岳','巨像','铁壁','震源'],
+             '光':['光帝','圣裁','辉煌','曙光','天罚','星神','辉耀']},
+    suffix:{ '火':['伊弗利特','赫菲斯托斯','萨拉曼达','灼心','阿格尼','不灭焰','焚世者'],
+             '水':['利维坦','波塞冬','涅普顿','深渊主','海德拉','吞潮者','冰渊王'],
+             '风':['加鲁达','赫尔墨斯','史特姆','天翔者','龙卷主','裂空王','风暴眼'],
+             '土':['贝希摩斯','该亚','泰坦','震裂者','磐古','山神','镇界兽'],
+             '光':['路西法','阿波罗','巴哈姆特','裁决者','灭世光','圣域主','辉耀帝']}
+  },
+
+  // ===== BOSS随机技能名片段 =====
+  BOSS_SKILL_POOL: {
+    '火':['烈焰吐息','火山爆发','灼烧大地','熔岩护甲','焚天之怒','流星火雨','狱炎爆破','赤焰连击','焰核引爆','灼魂之火'],
+    '水':['深渊漩涡','冰霜吐息','潮汐冲击','海渊护壁','冰封领域','苍海怒涛','冥水缠绕','寒冰穿刺','海啸轰击','涌潮之牙'],
+    '风':['暴风斩','龙卷突袭','真空刃','疾风连斩','苍穹裂断','风暴漩涡','羽刃风暴','雷暴之翼','裂空一闪','暴风领域'],
+    '土':['大地践踏','岩石崩落','地裂波动','铁壁防御','巨岩投掷','山崩地裂','结晶护壁','震源爆发','磐石碾压','沙暴吞噬'],
+    '光':['圣光裁决','天罚之矛','辉煌爆破','神圣领域','光柱轰击','星辰陨落','净化之光','圣域审判','终焉之光','曙光冲击']
+  },
+
+  // ===== BOSS特殊行动(精英/Boss专用) =====
+  BOSS_SPECIALS: {
+    '火':{name:'灭世焚天',desc:'Boss蓄力释放全体攻击！',power:2.5,aoe:true},
+    '水':{name:'绝对零度',desc:'Boss释放冰封领域，全体冻结！',power:2.0,aoe:true,debuff:{stat:'def',val:-0.15,dur:2}},
+    '风':{name:'天穹断裂',desc:'Boss释放超高速连击！',power:1.2,hits:5,aoe:false},
+    '土':{name:'地脉终焉',desc:'Boss释放地震波，附带眩晕！',power:2.2,aoe:true,debuff:{stat:'atk',val:-0.2,dur:2}},
+    '光':{name:'终焉审判',desc:'Boss释放终极裁决之光！',power:3.0,aoe:false}
+  },
+
+  STRINGS: {
+    title:'星辉幻战录',
+    subtitle:'Astral Chronicle',
+    selectTeam:'选择出战队伍（3人）',
+    selectSkills:'为 {name} 选择3个技能',
+    victory:'胜利！',
+    defeat:'战败...',
+    turnStart:'—— 第{n}回合 ——',
+    stageComplete:'关卡通过！队伍稍作休整...',
+    allClear:'恭喜通关！全部关卡已征服！',
+    bossSpecialWarn:'Boss正在蓄力...！',
+    bossSpecialFire:'Boss发动了特殊技能！'
+  }
+};
+
+// ============================================================
+// BOSS RANDOM GENERATOR - 随机化Boss名称/技能/数值
+// ============================================================
+function generateRandomBoss(element, stage) {
+  const tpl = GAME_CONFIG.BOSS_TEMPLATES[element];
+  const names = GAME_CONFIG.BOSS_NAMES;
+  const pfx = names.prefix[element];
+  const sfx = names.suffix[element];
+  const randName = pfx[Math.floor(Math.random()*pfx.length)] + '·' + sfx[Math.floor(Math.random()*sfx.length)];
+
+  // 从技能池随机选4个不重复技能
+  const pool = [...GAME_CONFIG.BOSS_SKILL_POOL[element]];
+  const skills = [];
+  for(let i=0;i<4&&pool.length;i++){
+    const idx = Math.floor(Math.random()*pool.length);
+    skills.push(pool.splice(idx,1)[0]);
+  }
+
+  // 数值随机浮动 ±15%
+  const rv = () => 0.85 + Math.random() * 0.30;
+  const hp  = Math.round(tpl.baseHp  * stage.hpMul  * rv());
+  const atk = Math.round(tpl.baseAtk * stage.atkMul * rv());
+  const def = Math.round(tpl.baseDef * stage.defMul * rv());
+  const crit= Math.min(0.5, tpl.baseCrit * rv() * (1 + stage.lvl * 0.02));
+
+  return {
+    name: randName,
+    element,
+    hp, atk, def, crit,
+    portrait: tpl.portrait,
+    skills,
+    level: stage.lvl,
+    stageType: stage.type,
+    hasSpecial: !!stage.hasSpecial,
+    special: stage.hasSpecial ? {...GAME_CONFIG.BOSS_SPECIALS[element]} : null,
+    specialUsed50: false,
+    specialUsed25: false
+  };
+}
+
+// ============================================================
+// GAME ENGINE
+// ============================================================
+class Game {
+  constructor(){
+    this.state = 'select';
+    // select | skills | preview | battle | stageResult | result
+    this.roster = GAME_CONFIG.CHARACTERS.map(c=>({...c,skills:c.skills.map(s=>({...s}))}));
+    this.selectedChars = [];
+    this.selectedSkills = {};
+    this.skillSelectIndex = 0;
+    this.team = [];
+    this.activeIdx = 0;
+    this.enemy = null;
+    this.currentStage = 0;
+    this.turn = 1;
+    this.log = [];
+    this.animating = false;
+    this.detailChar = null;
+    this.won = false;
+    this.specialWarning = false; // Boss蓄力警告
+  }
+
+  init(){ this.render(); }
+
+  // ===== Element advantage =====
+  getElementMult(atkEl, defEl){
+    const chart = GAME_CONFIG.ELEMENT_CHART;
+    if(chart[atkEl] === defEl) return GAME_CONFIG.ADVANTAGE_MULT;
+    for(let k in chart){ if(chart[k]===atkEl && k===defEl) return GAME_CONFIG.DISADVANTAGE_MULT; }
+    return 1.0;
+  }
+
+  // ===== Damage formula =====
+  calcDamage(atk, power, atkEl, defEl, defDef, crit, hits=1){
+    let total = 0;
+    const mult = this.getElementMult(atkEl, defEl);
+    const h = hits || 1;
+    let hadCrit = false;
+    for(let i=0; i<h; i++){
+      let base = atk * power / h;
+      base *= mult;
+      base *= (100 / (100 + Math.max(0, defDef)));
+      base *= (0.85 + Math.random() * 0.30);
+      if(Math.random() < crit){ base *= GAME_CONFIG.CRIT_MULT; hadCrit = true; }
+      total += base;
+    }
+    return { dmg: Math.round(total), crit: hadCrit, elMult: mult };
+  }
+
+  getEffStat(unit, stat){
+    let base = unit[stat] || 0;
+    if(unit.buffs){ unit.buffs.forEach(b=>{ if(b.stat===stat) base *= (1+b.val); }); }
+    return Math.max(0, base);
+  }
+
+  addLog(msg){ this.log.unshift(msg); if(this.log.length>60) this.log.pop(); }
+  delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+  // ===== SELECTION =====
+  selectChar(id){
+    if(this.selectedChars.includes(id)) this.selectedChars = this.selectedChars.filter(c=>c!==id);
+    else if(this.selectedChars.length<3) this.selectedChars.push(id);
+    this.render();
+  }
+  confirmTeam(){
+    if(this.selectedChars.length!==3) return;
+    this.state = 'skills';
+    this.skillSelectIndex = 0;
+    this.selectedSkills = {};
+    this.selectedChars.forEach(id=>{ this.selectedSkills[id] = []; });
+    this.render();
+  }
+  toggleSkill(charId, skillIdx){
+    const arr = this.selectedSkills[charId];
+    const char = this.roster.find(c=>c.id===charId);
+    if(char.skills[skillIdx].kind==='ult') return;
+    const idx = arr.indexOf(skillIdx);
+    if(idx>-1) arr.splice(idx,1);
+    else if(arr.length<3) arr.push(skillIdx);
+    this.render();
+  }
+  confirmSkills(){
+    const charId = this.selectedChars[this.skillSelectIndex];
+    if(this.selectedSkills[charId].length!==3) return;
+    this.skillSelectIndex++;
+    if(this.skillSelectIndex >= 3){
+      this.currentStage = 0;
+      this.buildTeam();
+      this.generateStageEnemy();
+      this.state = 'preview';
+    }
+    this.render();
+  }
+
+  // ===== TEAM BUILDING =====
+  buildTeam(){
+    this.team = this.selectedChars.map(id=>{
+      const base = this.roster.find(c=>c.id===id);
+      const skillIdxs = this.selectedSkills[id];
+      const ult = base.skills.find(s=>s.kind==='ult');
+      const activeSkills = skillIdxs.map(i=>({...base.skills[i], cdLeft:0}));
+      return {
+        ...base, maxHp:base.hp, curHp:base.hp, gauge:0, shield:0,
+        buffs:[], activeSkills, ult:{...ult, cdLeft:0}, alive:true
+      };
+    });
+  }
+
+  // ===== STAGE ENEMY GENERATION =====
+  generateStageEnemy(){
+    const stage = GAME_CONFIG.STAGES[this.currentStage];
+    const elements = Object.keys(GAME_CONFIG.BOSS_TEMPLATES);
+    const el = elements[Math.floor(Math.random() * elements.length)];
+    this.enemy = generateRandomBoss(el, stage);
+    this.enemy.maxHp = this.enemy.hp;
+    this.enemy.curHp = this.enemy.hp;
+    this.enemy.buffs = [];
+    this.enemy.turnCount = 0;
+  }
+
+  // ===== START BATTLE =====
+  startStageBattle(){
+    this.state = 'battle';
+    this.turn = 1;
+    this.log = [];
+    this.activeIdx = 0;
+    this.specialWarning = false;
+    // Find first alive char
+    for(let i=0; i<this.team.length; i++){
+      if(this.team[i].alive){ this.activeIdx = i; break; }
+    }
+    // Reset CDs
+    this.team.forEach(c=>{
+      c.activeSkills.forEach(s=>s.cdLeft=0);
+      c.buffs = [];
+    });
+    this.addLog(`${GAME_CONFIG.STAGES[this.currentStage].label} - ${this.enemy.name} 出现了！`);
+    this.addLog(GAME_CONFIG.STRINGS.turnStart.replace('{n}', this.turn));
+    this.render();
+  }
+
+  // ===== PLAYER SKILL =====
+  async useSkill(skillIdx){
+    if(this.animating) return;
+    this.animating = true;
+    const char = this.team[this.activeIdx];
+    if(!char.alive){ this.animating=false; return; }
+    const skill = char.activeSkills[skillIdx];
+    if(skill.cdLeft > 0){ this.animating=false; return; }
+
+    await this.executePlayerSkill(char, skill);
+    skill.cdLeft = skill.cd;
+    char.gauge = Math.min(GAME_CONFIG.MAX_GAUGE, char.gauge + (skill.gauge||0) * char.gaugeRate);
+    this.render();
+
+    if(this.enemy.curHp <= 0){ await this.handleEnemyDeath(); return; }
+
+    // Enemy turn
+    await this.delay(400);
+    await this.enemyTurn();
+    if(!this.team.some(c=>c.alive)){ await this.endBattle(false); return; }
+
+    this.advanceTurn();
+    this.animating = false;
+    this.render();
+  }
+
+  // ===== ULTIMATE =====
+  async useUlt(){
+    if(this.animating) return;
+    const char = this.team[this.activeIdx];
+    if(!char.alive || char.gauge < GAME_CONFIG.GAUGE_ULT_THRESHOLD) return;
+    this.animating = true;
+
+    this.showUltFlash(GAME_CONFIG.ELEMENT_COLORS[char.element]);
+    char.gauge = 0;
+    const res = this.calcDamage(this.getEffStat(char,'atk'), char.ult.power, char.element,
+      this.enemy.element, this.getEffStat(this.enemy,'def'), this.getEffStat(char,'crit'), char.ult.hits||1);
+    this.enemy.curHp = Math.max(0, this.enemy.curHp - res.dmg);
+    this.addLog(`💥 ${char.name}发动奥义【${char.ult.name}】！造成${res.dmg}点伤害！${res.crit?' 暴击！':''}`);
+    this.showDmgFloat(res.dmg, '#ffdd00', true);
+    await this.shakeScreen(true);
+    this.render();
+
+    if(this.enemy.curHp <= 0){ await this.handleEnemyDeath(); return; }
+
+    // Chain ult
+    for(let i=0; i<this.team.length; i++){
+      if(i===this.activeIdx) continue;
+      const c = this.team[i];
+      if(c.alive && c.gauge >= GAME_CONFIG.GAUGE_ULT_THRESHOLD){
+        await this.delay(300);
+        this.showUltFlash(GAME_CONFIG.ELEMENT_COLORS[c.element]);
+        c.gauge = 0;
+        const d = this.calcDamage(this.getEffStat(c,'atk'), c.ult.power, c.element,
+          this.enemy.element, this.getEffStat(this.enemy,'def'), this.getEffStat(c,'crit'), c.ult.hits||1);
+        this.enemy.curHp = Math.max(0, this.enemy.curHp - d.dmg);
+        this.addLog(`⚡ 连锁奥义！${c.name}【${c.ult.name}】造成${d.dmg}点伤害！`);
+        this.showDmgFloat(d.dmg, '#ff44ff', true);
+        await this.shakeScreen(true);
+        this.render();
+        if(this.enemy.curHp <= 0){ await this.handleEnemyDeath(); return; }
+      }
+    }
+
+    await this.delay(400);
+    await this.enemyTurn();
+    if(!this.team.some(c=>c.alive)){ await this.endBattle(false); return; }
+    this.advanceTurn();
+    this.animating = false;
+    this.render();
+  }
+
+  // ===== EXECUTE PLAYER SKILL =====
+  async executePlayerSkill(char, skill){
+    const eName = this.enemy.name;
+    switch(skill.kind){
+      case 'damage': case 'multi_hit': {
+        const res = this.calcDamage(this.getEffStat(char,'atk'), skill.power, char.element,
+          this.enemy.element, this.getEffStat(this.enemy,'def'), this.getEffStat(char,'crit'), skill.hits||1);
+        this.enemy.curHp = Math.max(0, this.enemy.curHp - res.dmg);
+        let msg = `${char.name}使用【${skill.name}】对${eName}造成${res.dmg}点伤害！`;
+        if(res.crit) msg += ' 暴击！';
+        if(res.elMult > 1) msg += ' 属性克制！';
+        else if(res.elMult < 1) msg += ' 属性被克...';
+        this.addLog(msg);
+        this.showDmgFloat(res.dmg, GAME_CONFIG.ELEMENT_COLORS[char.element], res.crit);
+        await this.shakeScreen();
+        break;
+      }
+      case 'heal': {
+        const val = Math.round(char.maxHp * skill.power);
+        char.curHp = Math.min(char.maxHp, char.curHp + val);
+        this.addLog(`${char.name}使用【${skill.name}】恢复了${val}点生命！`);
+        this.showDmgFloat('+'+val, '#4cff4c');
+        await this.delay(300);
+        break;
+      }
+      case 'shield': {
+        const val = Math.round(char.maxHp * skill.power);
+        char.shield += val;
+        this.addLog(`${char.name}使用【${skill.name}】获得${val}点护盾！`);
+        await this.delay(300);
+        break;
+      }
+      case 'buff': {
+        char.buffs.push({stat:skill.effect.stat, val:skill.effect.val, dur:skill.duration});
+        this.addLog(`${char.name}使用【${skill.name}】，${skill.desc}`);
+        await this.delay(300);
+        break;
+      }
+      case 'debuff': {
+        this.enemy.buffs.push({stat:skill.effect.stat, val:skill.effect.val, dur:skill.duration});
+        this.addLog(`${char.name}使用【${skill.name}】，${skill.desc}`);
+        await this.delay(300);
+        break;
+      }
+    }
+    this.render();
+  }
+
+  // ===== ENEMY TURN =====
+  async enemyTurn(){
+    const e = this.enemy;
+    e.turnCount++;
+    const scale = 1 + e.turnCount * GAME_CONFIG.BOSS_SCALE_PER_ROUND;
+
+    // === 特殊行动检测 (HP阈值) ===
+    const hpPct = e.curHp / e.maxHp;
+    if(e.hasSpecial && e.special){
+      if(hpPct <= 0.50 && !e.specialUsed50){
+        e.specialUsed50 = true;
+        await this.executeBossSpecial(e, scale);
+        if(!this.team.some(c=>c.alive)) return;
+        // 特殊行动后仍然正常攻击
+      }
+      if(hpPct <= 0.25 && !e.specialUsed25){
+        e.specialUsed25 = true;
+        await this.executeBossSpecial(e, scale * 1.3);
+        if(!this.team.some(c=>c.alive)) return;
+      }
+    }
+
+    // 正常攻击
+    const alive = this.team.filter(c=>c.alive);
+    if(!alive.length) return;
+    const target = alive[Math.floor(Math.random()*alive.length)];
+    const skillName = e.skills[Math.floor(Math.random()*e.skills.length)];
+    const power = (1.0 + Math.random()*0.8) * scale;
+    const res = this.calcDamage(this.getEffStat(e,'atk')*scale, power, e.element,
+      target.element, this.getEffStat(target,'def'), e.crit);
+
+    this.applyDamageToChar(target, res.dmg);
+    let msg = `${e.name}使用【${skillName}】对${target.name}造成${res.dmg}点伤害！`;
+    if(res.crit) msg += ' 暴击！';
+    if(e.turnCount % 5 === 0){ msg += ' 狂暴化！'; this.addLog('⚠ Boss的力量在增长...'); }
+    this.addLog(msg);
+    this.showDmgFloat(res.dmg, '#ff4444', res.crit);
+    await this.shakeScreen();
+    this.render();
+  }
+
+  // ===== BOSS SPECIAL ATTACK =====
+  async executeBossSpecial(e, scale){
+    const sp = e.special;
+    this.specialWarning = true;
+    this.addLog(`⚠ ${GAME_CONFIG.STRINGS.bossSpecialWarn}`);
+    this.render();
+    // 蓄力动画
+    await this.delay(800);
+
+    this.showUltFlash('#ff0000');
+    this.specialWarning = false;
+    this.addLog(`🔥 ${e.name}发动特殊技【${sp.name}】！${sp.desc}`);
+
+    if(sp.aoe){
+      // 全体攻击
+      for(const c of this.team){
+        if(!c.alive) continue;
+        const res = this.calcDamage(this.getEffStat(e,'atk')*scale, sp.power, e.element,
+          c.element, this.getEffStat(c,'def'), e.crit, sp.hits||1);
+        this.applyDamageToChar(c, res.dmg);
+        this.addLog(`  ${c.name}受到${res.dmg}点伤害！${res.crit?' 暴击！':''}`);
+        this.showDmgFloat(res.dmg, '#ff0000', true);
+        if(sp.debuff && c.alive){
+          c.buffs.push({...sp.debuff});
+        }
+      }
+    } else {
+      // 单体最高HP角色
+      const alive = this.team.filter(c=>c.alive);
+      const target = alive.reduce((a,b)=>a.curHp>b.curHp?a:b);
+      const res = this.calcDamage(this.getEffStat(e,'atk')*scale, sp.power, e.element,
+        target.element, this.getEffStat(target,'def'), e.crit, sp.hits||1);
+      this.applyDamageToChar(target, res.dmg);
+      this.addLog(`  ${target.name}受到${res.dmg}点伤害！${res.crit?' 暴击！':''}`);
+      this.showDmgFloat(res.dmg, '#ff0000', true);
+    }
+
+    await this.shakeScreen(true);
+    this.render();
+  }
+
+  // ===== APPLY DAMAGE (shield first) =====
+  applyDamageToChar(target, dmg){
+    let actual = dmg;
+    if(target.shield > 0){
+      if(target.shield >= actual){ target.shield -= actual; actual = 0; }
+      else { actual -= target.shield; target.shield = 0; }
+    }
+    target.curHp = Math.max(0, target.curHp - actual);
+    if(target.curHp <= 0) target.alive = false;
+  }
+
+  // ===== TURN MANAGEMENT =====
+  advanceTurn(){
+    this.turn++;
+    this.team.forEach(c=>{
+      if(!c.alive) return;
+      c.activeSkills.forEach(s=>{ if(s.cdLeft>0) s.cdLeft--; });
+      c.buffs = c.buffs.filter(b=>{ b.dur--; return b.dur>0; });
+    });
+    this.enemy.buffs = this.enemy.buffs.filter(b=>{ b.dur--; return b.dur>0; });
+    this.nextAliveChar();
+    this.addLog(GAME_CONFIG.STRINGS.turnStart.replace('{n}', this.turn));
+  }
+
+  nextAliveChar(){
+    for(let i=0; i<3; i++){
+      this.activeIdx = (this.activeIdx+1) % 3;
+      if(this.team[this.activeIdx].alive) return;
+    }
+  }
+
+  switchChar(idx){
+    if(this.animating) return;
+    if(this.team[idx] && this.team[idx].alive){ this.activeIdx = idx; this.render(); }
+  }
+
+  // ===== ENEMY DEATH -> STAGE PROGRESSION =====
+  async handleEnemyDeath(){
+    this.animating = false;
+    if(this.currentStage >= GAME_CONFIG.STAGES.length - 1){
+      // ALL CLEAR
+      await this.endBattle(true);
+    } else {
+      this.state = 'stageResult';
+      this.render();
+    }
+  }
+
+  nextStage(){
+    this.currentStage++;
+    // 回合间恢复20%HP
+    this.team.forEach(c=>{
+      if(c.alive){
+        c.curHp = Math.min(c.maxHp, c.curHp + Math.round(c.maxHp * 0.20));
+        c.shield = 0;
+        c.buffs = [];
+      }
+    });
+    this.generateStageEnemy();
+    this.state = 'preview';
+    this.render();
+  }
+
+  async endBattle(won){
+    this.state = 'result';
+    this.won = won;
+    this.addLog(won ? GAME_CONFIG.STRINGS.allClear : GAME_CONFIG.STRINGS.defeat);
+    this.animating = false;
+    this.render();
+  }
+
+  restart(){
+    this.state = 'select';
+    this.selectedChars = [];
+    this.selectedSkills = {};
+    this.currentStage = 0;
+    this.turn = 1;
+    this.log = [];
+    this.detailChar = null;
+    this.render();
+  }
+
+  // ===== VISUAL EFFECTS =====
+  showDmgFloat(val, color, big=false){
+    const gc = document.getElementById('game-container');
+    if(!gc) return;
+    const el = document.createElement('div');
+    el.className = 'dmg-float';
+    el.style.color = color;
+    el.style.left = (20 + Math.random()*50) + '%';
+    el.style.top = (15 + Math.random()*20) + '%';
+    if(big) el.style.fontSize = '2.8rem';
+    el.textContent = val;
+    gc.appendChild(el);
+    setTimeout(()=>el.remove(), 1200);
+  }
+  showUltFlash(color='#ffffff'){
+    const el = document.createElement('div');
+    el.className = 'ult-flash';
+    el.style.background = color === '#ff0000'
+      ? 'radial-gradient(circle,rgba(255,0,0,.6),rgba(255,0,0,.1))'
+      : `radial-gradient(circle,rgba(255,255,255,.8),${color}33)`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 700);
+  }
+  async shakeScreen(hard=false){
+    const gc = document.getElementById('game-container');
+    if(!gc) return;
+    gc.classList.add(hard ? 'shake-hard' : 'shake');
+    await this.delay(hard ? 600 : 300);
+    gc.classList.remove('shake','shake-hard');
+  }
+
+  // ===== DETAIL =====
+  showCharDetail(id){ this.detailChar = id; this.render(); }
+  closeDetail(){ this.detailChar = null; this.render(); }
+
+  // ============================================================
+  // RENDER
+  // ============================================================
+  render(){
+    const app = document.getElementById('app');
+    let html = '';
+    switch(this.state){
+      case 'select': html = this.renderSelect(); break;
+      case 'skills': html = this.renderSkillSelect(); break;
+      case 'preview': html = this.renderBossPreview(); break;
+      case 'battle': html = this.renderBattle(); break;
+      case 'stageResult': html = this.renderStageResult(); break;
+      case 'result': html = this.renderResult(); break;
+    }
+    app.innerHTML = html;
+    this.bindEvents();
+  }
+
+  // ----- Character detail modal -----
+  renderCharDetail(){
+    const c = this.roster.find(ch=>ch.id===this.detailChar);
+    if(!c) return '';
+    const kindLabel = k => ({damage:'伤害',multi_hit:'多段',heal:'回复',shield:'护盾',buff:'增益',debuff:'减益',ult:'奥义'}[k]||k);
+    const skills = c.skills.map(s=>`<div class="py-1.5 border-b border-gray-700/50">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-sm" style="color:${GAME_CONFIG.ELEMENT_COLORS[c.element]}">${s.name}</span>
+        <span class="text-xs px-1.5 py-0.5 rounded" style="background:${GAME_CONFIG.ELEMENT_COLORS[c.element]}22;color:${GAME_CONFIG.ELEMENT_COLORS[c.element]}">${kindLabel(s.kind)}</span>
+      </div>
+      <div class="text-xs opacity-60 mt-0.5">${s.desc}</div>
+      <div class="text-xs opacity-40 mt-0.5">威力:${s.power.toFixed(2)} CD:${s.cd} 充能:${s.gauge}${s.hits?' 段数:'+s.hits:''}</div>
+    </div>`).join('');
+    return `<div class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" data-action="closeDetail">
+      <div class="bg-gray-900 rounded-2xl p-5 max-w-sm w-full border border-yellow-700/60" onclick="event.stopPropagation()">
+        <div class="flex gap-4 mb-3 items-center">
+          <div class="char-portrait-full"><img src="${c.portrait}" alt="${c.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'font-size:4rem;display:flex;align-items:center;justify-content:center;height:100%\\'>${GAME_CONFIG.ELEMENT_ICONS[c.element]}</div>'"></div>
+          <div>
+            <div class="text-xl font-bold" style="color:${GAME_CONFIG.ELEMENT_COLORS[c.element]}">${c.name}</div>
+            <div class="text-xs opacity-60">${GAME_CONFIG.ELEMENT_ICONS[c.element]} ${c.element}属性</div>
+            <div class="text-sm opacity-70 mt-2">${c.lore}</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-5 gap-1 text-center text-xs mb-3 bg-black/30 rounded-lg p-2">
+          <div><div class="text-green-400 font-bold text-sm">${c.hp}</div><div class="opacity-50">HP</div></div>
+          <div><div class="text-red-400 font-bold text-sm">${c.atk}</div><div class="opacity-50">ATK</div></div>
+          <div><div class="text-blue-400 font-bold text-sm">${c.def}</div><div class="opacity-50">DEF</div></div>
+          <div><div class="text-yellow-400 font-bold text-sm">${(c.crit*100).toFixed(0)}%</div><div class="opacity-50">CRT</div></div>
+          <div><div class="text-purple-400 font-bold text-sm">${c.gaugeRate.toFixed(2)}</div><div class="opacity-50">充能</div></div>
+        </div>
+        <div class="text-xs font-bold mb-1 opacity-70">技能列表 (8/8)</div>
+        <div class="max-h-52 overflow-y-auto pr-1">${skills}</div>
+        <button class="w-full mt-3 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm" data-action="closeDetail">关闭</button>
+      </div>
+    </div>`;
+  }
+
+  // ----- SELECT SCREEN -----
+  renderSelect(){
+    const chars = this.roster.map(c=>{
+      const sel = this.selectedChars.includes(c.id);
+      return `<div class="char-card ${sel?'selected':''}" data-action="selectChar" data-id="${c.id}">
+        <div class="flex items-center gap-3">
+          <div class="char-card-portrait" style="border-color:${GAME_CONFIG.ELEMENT_COLORS[c.element]}" data-action="showDetail" data-id="${c.id}">
+            <img src="${c.portrait}" alt="${c.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'font-size:1.8rem;display:flex;align-items:center;justify-content:center;height:100%;background:#1a1a2e\\'>${GAME_CONFIG.ELEMENT_ICONS[c.element]}</div>'">
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold" style="color:${GAME_CONFIG.ELEMENT_COLORS[c.element]}">${c.name} <span class="text-xs opacity-50">${GAME_CONFIG.ELEMENT_ICONS[c.element]}${c.element}</span></div>
+            <div class="text-xs opacity-50">HP:${c.hp} ATK:${c.atk} DEF:${c.def} CRT:${(c.crit*100).toFixed(0)}%</div>
+            <div class="text-xs opacity-30 mt-0.5 line-clamp-2">${c.lore}</div>
+          </div>
+          ${sel ? '<div class="text-yellow-500 text-lg font-bold">✓</div>' : ''}
+        </div>
+      </div>`;
+    }).join('');
+    const detail = this.detailChar ? this.renderCharDetail() : '';
+    return `<div id="game-container" class="p-4">
+      <h1 class="text-2xl font-black text-center mb-0.5" style="color:#c9a84c">${GAME_CONFIG.STRINGS.title}</h1>
+      <p class="text-center text-xs opacity-30 mb-2 tracking-widest">${GAME_CONFIG.STRINGS.subtitle}</p>
+      <p class="text-center text-xs opacity-50 mb-1">点击立绘查看详细信息</p>
+      <p class="text-center text-sm opacity-60 mb-3">${GAME_CONFIG.STRINGS.selectTeam}</p>
+      <div class="grid gap-2.5">${chars}</div>
+      <button class="w-full mt-4 py-3 rounded-xl font-bold text-lg transition ${this.selectedChars.length===3?'bg-gradient-to-r from-yellow-700 to-yellow-500 hover:from-yellow-600':'bg-gray-700/50 opacity-50 cursor-not-allowed'}"
+        data-action="confirmTeam" ${this.selectedChars.length!==3?'disabled':''}>
+        确认出战 (${this.selectedChars.length}/3)
+      </button>
+    </div>${detail}`;
+  }
+
+  // ----- SKILL SELECT -----
+  renderSkillSelect(){
+    const charId = this.selectedChars[this.skillSelectIndex];
+    const char = this.roster.find(c=>c.id===charId);
+    const selected = this.selectedSkills[charId];
+    const kindLabel = k => ({damage:'伤害',multi_hit:'多段',heal:'回复',shield:'护盾',buff:'增益',debuff:'减益',ult:'奥义'}[k]||k);
+    const skills = char.skills.map((s,i)=>{
+      if(s.kind==='ult') return `<div class="char-card opacity-60 cursor-default">
+        <div class="flex items-center gap-2"><span class="text-yellow-400">🌟</span><span class="text-sm font-bold">${s.name}</span><span class="text-xs opacity-50">（奥义·自动装备）</span></div>
+        <div class="text-xs opacity-50 mt-0.5">${s.desc}</div></div>`;
+      const sel = selected.includes(i);
+      return `<div class="char-card ${sel?'selected':''}" data-action="toggleSkill" data-charid="${charId}" data-idx="${i}">
+        <div class="flex items-center gap-2">
+          <div class="font-bold text-sm" style="color:${GAME_CONFIG.ELEMENT_COLORS[char.element]}">${s.name}</div>
+          <span class="text-xs px-1 py-0.5 rounded opacity-60" style="background:${GAME_CONFIG.ELEMENT_COLORS[char.element]}22">${kindLabel(s.kind)}</span>
+        </div>
+        <div class="text-xs opacity-50 mt-0.5">${s.desc}</div>
+        <div class="text-xs opacity-30 mt-0.5">威力:${s.power.toFixed(2)} · CD:${s.cd} · 充能:${s.gauge}${s.hits?' · '+s.hits+'段':''}</div>
+      </div>`;
+    }).join('');
+    return `<div id="game-container" class="p-4">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="char-card-portrait" style="border-color:${GAME_CONFIG.ELEMENT_COLORS[char.element]}">
+          <img src="${char.portrait}" alt="${char.name}" onerror="this.parentElement.innerHTML='<div style=\\'font-size:1.8rem;display:flex;align-items:center;justify-content:center;height:100%;background:#1a1a2e\\'>${GAME_CONFIG.ELEMENT_ICONS[char.element]}</div>'">
+        </div>
+        <div>
+          <h2 class="text-lg font-bold" style="color:${GAME_CONFIG.ELEMENT_COLORS[char.element]}">${char.name}</h2>
+          <p class="text-xs opacity-50">角色 ${this.skillSelectIndex+1}/3 · 选择3个技能携带出战</p>
+        </div>
+      </div>
+      <div class="grid gap-2">${skills}</div>
+      <button class="w-full mt-4 py-3 rounded-xl font-bold transition ${selected.length===3?'bg-gradient-to-r from-yellow-700 to-yellow-500 hover:from-yellow-600':'bg-gray-700/50 opacity-50 cursor-not-allowed'}"
+        data-action="confirmSkills" ${selected.length!==3?'disabled':''}>
+        确认技能 (${selected.length}/3)
+      </button>
+    </div>`;
+  }
+
+  // ----- BOSS PREVIEW (战前情报) -----
+  renderBossPreview(){
+    const e = this.enemy;
+    const stage = GAME_CONFIG.STAGES[this.currentStage];
+    const elColor = GAME_CONFIG.ELEMENT_COLORS[e.element];
+    const elIcon = GAME_CONFIG.ELEMENT_ICONS[e.element];
+    const typeColors = {'小怪':'#4caf50','精英':'#ff9800','Boss':'#f44336'};
+    const typeLabels = {'小怪':'普通','精英':'精英','Boss':'首领'};
+
+    // 关卡进度条
+    const stageBar = GAME_CONFIG.STAGES.map((_,i)=>{
+      let cls = 'stage-dot';
+      if(i < this.currentStage) cls += ' done';
+      else if(i === this.currentStage) cls += ' current';
+      else cls += ' future';
+      return `<div class="${cls}"></div>`;
+    }).join('');
+
+    // 难度星级
+    const stars = '★'.repeat(Math.min(5, Math.ceil(stage.lvl/3))) + '☆'.repeat(Math.max(0, 5 - Math.ceil(stage.lvl/3)));
+
+    return `<div id="game-container" class="p-4 flex flex-col items-center justify-center min-h-screen" style="background:${GAME_CONFIG.ELEMENT_BG[e.element]}">
+      <div class="stage-bar mb-4 w-full max-w-xs">${stageBar}</div>
+      <div class="text-xs opacity-50 mb-1">关卡 ${this.currentStage+1}/${GAME_CONFIG.STAGES.length}</div>
+      <div class="text-lg font-bold mb-3" style="color:${typeColors[stage.type]}">${stage.label}</div>
+
+      <div class="boss-portrait mb-3" style="width:140px;height:180px;border-color:${elColor}">
+        <img src="${e.portrait}" alt="${e.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'font-size:4rem;display:flex;align-items:center;justify-content:center;height:100%\\'>${elIcon}</div>'">
+      </div>
+
+      <div class="text-xl font-black mb-1" style="color:${elColor}">${elIcon} ${e.name}</div>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-xs px-2 py-0.5 rounded-full font-bold" style="background:${typeColors[stage.type]}22;color:${typeColors[stage.type]};border:1px solid ${typeColors[stage.type]}">${typeLabels[stage.type]}</span>
+        <span class="text-xs opacity-50">Lv.${e.level}</span>
+        <span class="text-xs text-yellow-500">${stars}</span>
+      </div>
+
+      <div class="bg-black/40 rounded-xl p-4 w-full max-w-xs mb-3">
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="flex justify-between"><span class="opacity-50">HP</span><span class="text-green-400 font-bold">${e.hp}</span></div>
+          <div class="flex justify-between"><span class="opacity-50">ATK</span><span class="text-red-400 font-bold">${e.atk}</span></div>
+          <div class="flex justify-between"><span class="opacity-50">DEF</span><span class="text-blue-400 font-bold">${e.def}</span></div>
+          <div class="flex justify-between"><span class="opacity-50">CRT</span><span class="text-yellow-400 font-bold">${(e.crit*100).toFixed(0)}%</span></div>
+        </div>
+        ${e.hasSpecial ? `<div class="mt-2 pt-2 border-t border-gray-700"><div class="text-xs text-red-400 font-bold">⚠ 拥有特殊行动</div><div class="text-xs opacity-50">${e.special.name} - ${e.special.desc}</div></div>` : ''}
+      </div>
+
+      <div class="bg-black/30 rounded-lg p-3 w-full max-w-xs mb-4">
+        <div class="text-xs opacity-50 mb-1">技能</div>
+        <div class="flex flex-wrap gap-1">${e.skills.map(s=>`<span class="text-xs px-2 py-0.5 rounded" style="background:${elColor}22;color:${elColor}">${s}</span>`).join('')}</div>
+      </div>
+
+      <div class="text-xs opacity-40 mb-2">属性: ${elIcon}${e.element} ${GAME_CONFIG.ELEMENT_CHART[e.element] ? '→ 克制 '+GAME_CONFIG.ELEMENT_ICONS[GAME_CONFIG.ELEMENT_CHART[e.element]]+GAME_CONFIG.ELEMENT_CHART[e.element] : '(无克制)'}</div>
+
+      <button class="w-full max-w-xs py-3 rounded-xl font-bold text-lg bg-gradient-to-r from-red-800 to-red-600 hover:from-red-700 border border-red-500/30" data-action="startBattle">
+        开始战斗
+      </button>
+    </div>`;
+  }
+
+  // ----- BATTLE SCREEN -----
+  renderBattle(){
+    const e = this.enemy;
+    const char = this.team[this.activeIdx];
+    const hpPct = Math.max(0, (e.curHp/e.maxHp)*100);
+    const stage = GAME_CONFIG.STAGES[this.currentStage];
+    const elColor = GAME_CONFIG.ELEMENT_COLORS[e.element];
+    const typeColors = {'小怪':'#4caf50','精英':'#ff9800','Boss':'#f44336'};
+
+    // Stage bar
+    const stageBar = GAME_CONFIG.STAGES.map((_,i)=>{
+      let cls = 'stage-dot';
+      if(i < this.currentStage) cls += ' done';
+      else if(i === this.currentStage) cls += ' current';
+      else cls += ' future';
+      return `<div class="${cls}"></div>`;
+    }).join('');
+
+    // Enemy
+    const specialWarnHtml = this.specialWarning ? '<div class="special-warn text-center text-sm font-bold text-red-400 my-1">⚠ Boss正在蓄力...准备特殊攻击！</div>' : '';
+    const enemyHtml = `
+      <div class="stage-bar mb-2">${stageBar}</div>
+      <div class="flex items-center gap-3 p-3 rounded-xl" style="background:#12121f;border:1px solid ${elColor}33">
+        <div class="boss-portrait" style="border-color:${elColor}">
+          <img src="${e.portrait}" alt="${e.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'font-size:2.5rem;display:flex;align-items:center;justify-content:center;height:100%\\'>${GAME_CONFIG.ELEMENT_ICONS[e.element]}</div>'">
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5 mb-0.5">
+            <span class="text-xs px-1.5 py-0.5 rounded font-bold" style="background:${typeColors[stage.type]}33;color:${typeColors[stage.type]}">${stage.type}</span>
+            <span class="font-bold text-sm truncate" style="color:${elColor}">${e.name}</span>
+          </div>
+          <div class="text-xs opacity-40 mb-1">Lv.${e.level} · 强化+${Math.round(e.turnCount*GAME_CONFIG.BOSS_SCALE_PER_ROUND*100)}%</div>
+          <div class="w-full h-4 rounded-full overflow-hidden" style="background:#333">
+            <div class="hp-bar h-full rounded-full" style="width:${hpPct}%;background:linear-gradient(90deg,${hpPct<25?'#ff0000':hpPct<50?'#ff4444':'#ff6600'},${hpPct<25?'#ff4444':'#ff8800'})"></div>
+          </div>
+          <div class="text-xs mt-0.5 opacity-60">${e.curHp} / ${e.maxHp}</div>
+        </div>
+      </div>${specialWarnHtml}`;
+
+    // Log
+    const logHtml = `<div class="my-2 p-2 rounded-xl overflow-y-auto" style="background:#0d0d1a;border:1px solid #222;height:110px;scroll-behavior:smooth">
+      ${this.log.slice(0,20).map(l=>`<div class="log-entry text-xs py-0.5 opacity-75">${l}</div>`).join('')}
+    </div>`;
+
+    // Team
+    const teamHtml = this.team.map((c,i)=>{
+      const active = i===this.activeIdx;
+      const hpP = Math.max(0, (c.curHp/c.maxHp)*100);
+      const gP = Math.min(100, c.gauge);
+      const cColor = GAME_CONFIG.ELEMENT_COLORS[c.element];
+      return `<div class="flex items-center gap-1.5 p-1.5 rounded-lg cursor-pointer ${active?'ring-2 ring-yellow-500':''} ${!c.alive?'opacity-25 grayscale':''}"
+        style="background:#16162a" data-action="switchChar" data-idx="${i}">
+        <div class="char-avatar" style="border-color:${cColor}">
+          <img src="${c.avatar}" alt="${c.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'font-size:1.2rem;display:flex;align-items:center;justify-content:center;height:100%\\'>${GAME_CONFIG.ELEMENT_ICONS[c.element]}</div>'">
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="text-xs font-bold truncate">${c.name}</div>
+          <div class="w-full h-2 rounded-full mt-0.5" style="background:#333">
+            <div class="hp-bar h-full rounded-full" style="width:${hpP}%;background:${hpP<25?'#ff4444':'#4caf50'}"></div>
+          </div>
+          <div class="w-full h-1.5 rounded-full mt-0.5" style="background:#222">
+            <div class="gauge-bar h-full rounded-full" style="width:${gP}%;background:${gP>=100?'#ffdd00':'#7c4dff'}"></div>
+          </div>
+          <div class="text-xs opacity-40">${c.curHp}/${c.maxHp}${c.shield>0?' 🛡'+c.shield:''}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Skills
+    const cColor = GAME_CONFIG.ELEMENT_COLORS[char.element];
+    const skillBtns = char.activeSkills.map((s,i)=>{
+      const onCd = s.cdLeft > 0;
+      const kindIcon = {damage:'⚔',multi_hit:'⚔⚔',heal:'💚',shield:'🛡',buff:'⬆',debuff:'⬇'}[s.kind]||'';
+      return `<button class="skill-btn flex-1 py-2.5 px-1.5 rounded-xl text-center ${onCd?'disabled':''}"
+        style="background:#1e1e3a;border:2px solid ${cColor}"
+        data-action="useSkill" data-idx="${i}"
+        data-skillname="${s.name}" data-skilldesc="${s.desc} | 威力:${s.power.toFixed(1)} CD:${s.cd}">
+        <div class="text-xs opacity-40">${kindIcon}</div>
+        <div class="text-sm font-bold">${s.name}</div>
+        ${onCd ? `<div class="cd-overlay">${s.cdLeft}</div>` : ''}
+      </button>`;
+    }).join('');
+
+    // Ult
+    const ultReady = char.gauge >= GAME_CONFIG.GAUGE_ULT_THRESHOLD;
+    const ultBtn = `<button class="skill-btn w-full py-3 mt-2 rounded-xl font-bold text-base ${ultReady?'':'disabled'}"
+      style="background:${ultReady?'linear-gradient(135deg,#c9a84c,'+cColor+')':'#1a1a2a'};border:2px solid ${ultReady?'#ffdd00':'#333'};--gc:${cColor};${ultReady?'animation:pulseGlow 1.5s infinite':''}"
+      data-action="useUlt">
+      🌟 ${char.ult.name} ${ultReady ? '[发动！]' : '['+Math.round(char.gauge)+'%]'}
+    </button>`;
+
+    return `<div id="game-container" class="flex flex-col p-3 min-h-screen" style="min-height:100dvh">
+      ${enemyHtml}${logHtml}
+      <div class="grid grid-cols-3 gap-1.5 mb-2">${teamHtml}</div>
+      <div class="mt-auto pb-2">
+        <div class="flex gap-1.5">${skillBtns}</div>
+        ${ultBtn}
+      </div>
+    </div>`;
+  }
+
+  // ----- STAGE RESULT -----
+  renderStageResult(){
+    const stage = GAME_CONFIG.STAGES[this.currentStage];
+    const nextStage = GAME_CONFIG.STAGES[this.currentStage + 1];
+    return `<div id="game-container" class="flex flex-col items-center justify-center min-h-screen p-4">
+      <div class="text-4xl mb-3">⚔</div>
+      <h2 class="text-xl font-bold mb-1" style="color:#c9a84c">${stage.label} - 通过！</h2>
+      <p class="text-sm opacity-60 mb-1">击败了 ${this.enemy.name}</p>
+      <p class="text-xs opacity-40 mb-3">回合数: ${this.turn}</p>
+      <div class="bg-black/40 rounded-xl p-4 w-full max-w-xs mb-4">
+        <div class="text-xs opacity-50 mb-2">队伍状态 (恢复20%HP)</div>
+        ${this.team.map(c=>{
+          const hpP = Math.max(0, (c.curHp/c.maxHp)*100);
+          return `<div class="flex items-center gap-2 mb-1.5">
+            <div class="text-sm font-bold w-12 truncate" style="color:${GAME_CONFIG.ELEMENT_COLORS[c.element]}">${c.name}</div>
+            <div class="flex-1 h-2 rounded-full" style="background:#333">
+              <div class="h-full rounded-full" style="width:${hpP}%;background:${c.alive?'#4caf50':'#ff4444'}"></div>
+            </div>
+            <div class="text-xs opacity-50 w-16 text-right">${c.alive?c.curHp+'/'+c.maxHp:'阵亡'}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <p class="text-xs opacity-40 mb-3">下一关: ${nextStage ? nextStage.label : '???'}</p>
+      <button class="w-full max-w-xs py-3 rounded-xl font-bold text-lg bg-gradient-to-r from-yellow-700 to-yellow-500 hover:from-yellow-600" data-action="nextStage">
+        继续前进 →
+      </button>
+    </div>`;
+  }
+
+  // ----- FINAL RESULT -----
+  renderResult(){
+    return `<div id="game-container" class="flex flex-col items-center justify-center min-h-screen p-4">
+      <div class="text-5xl mb-4">${this.won ? '🎉' : '💀'}</div>
+      <h2 class="text-2xl font-black mb-2" style="color:${this.won?'#c9a84c':'#ff4444'}">${this.won ? GAME_CONFIG.STRINGS.allClear : GAME_CONFIG.STRINGS.defeat}</h2>
+      <p class="text-sm opacity-60 mb-1">${this.won ? '全部 '+GAME_CONFIG.STAGES.length+' 关通关！' : '在第 '+(this.currentStage+1)+' 关战败'}</p>
+      <p class="text-xs opacity-40 mb-4">总回合数: ${this.turn} · 最终关卡: ${GAME_CONFIG.STAGES[this.currentStage].label}</p>
+      <button class="py-3 px-10 rounded-xl font-bold text-lg bg-gradient-to-r from-yellow-700 to-yellow-500 hover:from-yellow-600" data-action="restart">
+        重新挑战
+      </button>
+    </div>`;
+  }
+
+  // ===== EVENT BINDING =====
+  bindEvents(){
+    document.querySelectorAll('[data-action]').forEach(el=>{
+      const action = el.dataset.action;
+      el.addEventListener('click', ev => {
+        switch(action){
+          case 'selectChar': this.selectChar(el.dataset.id); break;
+          case 'showDetail': ev.stopPropagation(); this.showCharDetail(el.dataset.id); break;
+          case 'closeDetail': this.closeDetail(); break;
+          case 'confirmTeam': this.confirmTeam(); break;
+          case 'toggleSkill': this.toggleSkill(el.dataset.charid, parseInt(el.dataset.idx)); break;
+          case 'confirmSkills': this.confirmSkills(); break;
+          case 'startBattle': this.startStageBattle(); break;
+          case 'useSkill': this.useSkill(parseInt(el.dataset.idx)); break;
+          case 'useUlt': this.useUlt(); break;
+          case 'switchChar': this.switchChar(parseInt(el.dataset.idx)); break;
+          case 'nextStage': this.nextStage(); break;
+          case 'restart': this.restart(); break;
+        }
+      });
+      // Long press tooltip
+      if(action === 'useSkill'){
+        let timer;
+        el.addEventListener('pointerdown', ()=>{
+          timer = setTimeout(()=>{
+            const tip = document.createElement('div');
+            tip.className = 'tooltip-box';
+            tip.innerHTML = `<div class="font-bold mb-1">${el.dataset.skillname}</div><div>${el.dataset.skilldesc}</div>`;
+            el.appendChild(tip);
+            el._hasTip = true;
+          }, 400);
+        });
+        const clearTip = ()=>{ clearTimeout(timer); if(el._hasTip){ el.querySelector('.tooltip-box')?.remove(); el._hasTip=false; }};
+        el.addEventListener('pointerup', clearTip);
+        el.addEventListener('pointerleave', clearTip);
+        el.addEventListener('pointercancel', clearTip);
+      }
+    });
+  }
+}
+
+// ===== LAUNCH =====
+const game = new Game();
+game.init();
+</script>
+</body>
+</html>

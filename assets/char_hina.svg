@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a0000"/>
+      <stop offset="50%" stop-color="#8b1a1a"/>
+      <stop offset="100%" stop-color="#2d0000"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#ff4500" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#4a0000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="silhouette" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a0000"/>
+      <stop offset="100%" stop-color="#0d0000"/>
+    </linearGradient>
+    <linearGradient id="flame1" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#ff4500"/>
+      <stop offset="50%" stop-color="#ff6a00"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="flame2" x1="0" y1="1" x2="0.3" y2="0">
+      <stop offset="0%" stop-color="#ff2200"/>
+      <stop offset="100%" stop-color="#ff8c00" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="swordGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff6a00"/>
+      <stop offset="40%" stop-color="#ffaa00"/>
+      <stop offset="100%" stop-color="#ff4500"/>
+    </linearGradient>
+    <filter id="fireGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="280" fill="url(#bg)"/>
+  <rect width="200" height="280" fill="url(#glow)"/>
+
+  <!-- Decorative border -->
+  <rect x="4" y="4" width="192" height="272" rx="8" fill="none" stroke="#ff4500" stroke-width="1.5" stroke-opacity="0.4"/>
+  <rect x="8" y="8" width="184" height="264" rx="6" fill="none" stroke="#ff6a00" stroke-width="0.5" stroke-opacity="0.3"/>
+
+  <!-- Background flames (behind silhouette) -->
+  <g filter="url(#softGlow)" opacity="0.3">
+    <path d="M30,240 Q25,200 40,180 Q35,160 45,140 Q40,130 50,110 Q55,130 50,150 Q60,140 55,165 Q65,155 58,180 Q68,175 60,200 Q70,195 62,220 Q55,240 50,240Z" fill="#ff4500"/>
+    <path d="M150,240 Q155,210 145,190 Q150,175 140,155 Q145,140 135,120 Q130,140 138,155 Q128,150 135,170 Q125,165 133,185 Q123,180 130,205 Q120,200 128,225 Q135,240 140,240Z" fill="#ff4500"/>
+  </g>
+
+  <!-- Character silhouette - girl with long flowing hair and sword -->
+  <g fill="url(#silhouette)">
+    <!-- Head -->
+    <ellipse cx="100" cy="72" rx="22" ry="26"/>
+    <!-- Hair top volume -->
+    <ellipse cx="100" cy="62" rx="26" ry="20"/>
+    <!-- Hair flowing right side -->
+    <path d="M120,55 Q135,70 138,95 Q142,120 145,150 Q148,170 150,190 Q145,195 140,190 Q138,170 135,150 Q130,125 125,105 Q120,85 118,70Z"/>
+    <!-- Hair flowing left side -->
+    <path d="M80,55 Q70,70 65,90 Q60,110 55,135 Q52,155 48,175 Q53,178 58,173 Q62,150 65,130 Q70,108 75,90 Q78,75 80,65Z"/>
+    <!-- Hair bangs -->
+    <path d="M78,58 Q82,48 90,45 Q95,43 100,42 Q105,43 110,45 Q118,48 122,58 Q115,55 108,53 Q100,52 92,53 Q85,55 78,58Z"/>
+    <!-- Neck -->
+    <rect x="93" y="95" width="14" height="12" rx="3"/>
+    <!-- Body/torso -->
+    <path d="M80,105 Q78,108 75,120 Q72,135 70,150 Q68,165 70,175 L130,175 Q132,165 130,150 Q128,135 125,120 Q122,108 120,105Z"/>
+    <!-- Skirt -->
+    <path d="M65,170 Q60,195 55,215 Q53,225 52,230 L148,230 Q147,225 145,215 Q140,195 135,170Z"/>
+    <!-- Left arm holding sword -->
+    <path d="M80,110 Q70,115 62,125 Q55,135 50,148 Q48,155 50,158 Q55,155 58,148 Q62,138 68,130 Q72,125 78,118Z"/>
+    <!-- Right arm -->
+    <path d="M120,110 Q128,118 135,128 Q140,138 142,148 Q143,155 140,158 Q137,152 135,145 Q130,135 125,125 Q122,118 120,112Z"/>
+    <!-- Legs hint -->
+    <path d="M75,228 Q73,240 72,250 L88,250 Q87,242 86,235Z"/>
+    <path d="M125,228 Q127,240 128,250 L112,250 Q113,242 114,235Z"/>
+  </g>
+
+  <!-- Sword -->
+  <g filter="url(#fireGlow)">
+    <line x1="48" y1="155" x2="32" y2="55" stroke="url(#swordGrad)" stroke-width="3" stroke-linecap="round"/>
+    <!-- Sword guard -->
+    <line x1="38" y1="142" x2="58" y2="148" stroke="#ffaa00" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Sword glow -->
+    <line x1="48" y1="155" x2="32" y2="55" stroke="#ffd700" stroke-width="1" stroke-opacity="0.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Eyes glow -->
+  <ellipse cx="91" cy="72" rx="3" ry="2" fill="#ff4500" opacity="0.9" filter="url(#fireGlow)"/>
+  <ellipse cx="109" cy="72" rx="3" ry="2" fill="#ff4500" opacity="0.9" filter="url(#fireGlow)"/>
+
+  <!-- Fire accents foreground -->
+  <g filter="url(#fireGlow)" opacity="0.7">
+    <!-- Left flame -->
+    <path d="M15,260 Q10,240 18,220 Q12,205 22,185 Q20,200 25,210 Q22,225 28,235 Q24,245 30,255 Q25,260 20,260Z" fill="url(#flame1)"/>
+    <!-- Right flame -->
+    <path d="M185,260 Q190,242 182,225 Q188,210 178,195 Q182,208 176,218 Q182,228 175,240 Q180,248 172,255 Q178,260 182,260Z" fill="url(#flame1)"/>
+    <!-- Small sparks -->
+    <circle cx="35" cy="100" r="2" fill="#ffd700" opacity="0.8"/>
+    <circle cx="165" cy="85" r="1.5" fill="#ff6a00" opacity="0.7"/>
+    <circle cx="155" cy="120" r="1" fill="#ffd700" opacity="0.6"/>
+    <circle cx="42" cy="140" r="1.5" fill="#ff8c00" opacity="0.7"/>
+    <circle cx="25" cy="170" r="1" fill="#ffd700" opacity="0.5"/>
+    <circle cx="170" cy="160" r="2" fill="#ff4500" opacity="0.6"/>
+  </g>
+
+  <!-- Flame particles rising -->
+  <g opacity="0.5">
+    <circle cx="60" cy="45" r="1.5" fill="#ff6a00">
+      <animate attributeName="cy" values="45;25;10" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.3;0" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="145" cy="50" r="1" fill="#ffd700">
+      <animate attributeName="cy" values="50;30;15" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0.2;0" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="100" cy="35" r="1.2" fill="#ff4500">
+      <animate attributeName="cy" values="35;18;5" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0.2;0" dur="4s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Bottom panel -->
+  <rect x="0" y="245" width="200" height="35" fill="#1a0000" fill-opacity="0.8"/>
+  <line x1="20" y1="248" x2="180" y2="248" stroke="#ff4500" stroke-width="1" stroke-opacity="0.5"/>
+
+  <!-- Character name -->
+  <text x="100" y="270" text-anchor="middle" font-family="serif" font-size="22" font-weight="bold" fill="#ff6a00" letter-spacing="8">绯奈</text>
+  <text x="100" y="270" text-anchor="middle" font-family="serif" font-size="22" font-weight="bold" fill="#ffd700" letter-spacing="8" opacity="0.3">绯奈</text>
+
+  <!-- Corner accents -->
+  <path d="M4,20 L4,4 L20,4" fill="none" stroke="#ff4500" stroke-width="2" stroke-opacity="0.6"/>
+  <path d="M180,4 L196,4 L196,20" fill="none" stroke="#ff4500" stroke-width="2" stroke-opacity="0.6"/>
+  <path d="M4,260 L4,276 L20,276" fill="none" stroke="#ff4500" stroke-width="2" stroke-opacity="0.6"/>
+  <path d="M180,276 L196,276 L196,260" fill="none" stroke="#ff4500" stroke-width="2" stroke-opacity="0.6"/>
+</svg>
